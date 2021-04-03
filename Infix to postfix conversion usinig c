@@ -1,0 +1,44 @@
+char* infix_to_postfix(char *str,char* ans){
+	char t[1];
+	int i,j=0;
+	for(i=0;i<strlen(str);i++){
+		if(is_operator(str[i])==1){
+			if(str[i]=='('){
+				push(str[i]);
+				continue;
+			}
+			else if(str[i]==')'){
+					while(stack[top]!='('){
+						ans[j]=pop();
+						j++;
+					}//6+4/2-3*2+5// 6 4 2 / + 3 2 * - 5 +
+					pop();
+					continue;
+			    }
+			else{
+				if(top==-1){
+				    push(str[i]);
+				}
+				else if(operator_precedence(str[i])>operator_precedence(stack[top])){
+					push(str[i]);
+				}
+				else{
+					while(operator_precedence(str[i])<=operator_precedence(stack[top]) && top!=-1){
+						ans[j]=pop();
+						j++;
+					}
+					push(str[i]);
+				}
+			}
+		}
+		else{
+			ans[j]=str[i];
+			j++;
+		}
+	}
+	while(isempty()==0){
+	    ans[j]=pop();
+		j++;
+	}
+	return ans;
+}
