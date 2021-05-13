@@ -2,210 +2,217 @@
 #include <stdlib.h>
 struct node{
     int data;
-    struct node *left;
-    struct node *right;
-}*p,*n,*head=NULL,*par,*succ,*temp;
-void delete(struct node* p,int val)
-{
+    struct node *left,*right;
+    char color;
+}*head=NULL,*p,*n,*old,*par,*succ;
+struct node* newNode(int val){
+    n=(struct node*)malloc(sizeof(struct node));
+    n->data=val;
+    n->left=n->right=NULL;
+    return n;
+}
+void insert(int val){
+    p=old=head;
     if(p==NULL){
-        printf("No element %d in the tree\n",val);
-        return;
+        head=newNode(val);
     }
-    else if(p->data<val){
-        par=p;
-        delete(p->right,val);
-    }
-    else if(p->data>val){
-        par=p;
-        delete(p->left,val);
-    }
-    else if(p->data==val){
-        //leaf node deletion...
-        if(p->left==NULL && p->right==NULL){
-            if(head==p){
-                head=NULL;
-                goto x;
+    while(p!=NULL){
+        old=p;
+        if(p->data>val){
+            if(old->left==NULL){
+                old->left=newNode(val);
+                return;
             }
-            if(par->left==p){
-                par->left=NULL;
-            }
-            else{
-                par->right=NULL;
-            }
+            p=p->left;
         }
-        //node with one child deletion...
-        else if(p->left==NULL && p->right!=NULL){
-                if(p==head){
-                    head=p->right;
-                    goto x;
-                }
-            if(par->left==p){
-                par->left=p->right;
+        else if(p->data<val){
+            if(old->right==NULL){
+                old->right=newNode(val);
+                return;
             }
-            else{
-                par->right=p->right;
-            }
+            p=p->right;
         }
-        else if(p->left!=NULL && p->right==NULL){
-                if(p==head){
-                    head=p->left;
-                    goto x;
-                }
-            if(par->left==p){
-                par->left=p->left;
-            }
-            else{
-                par->right=p->left;
-            }
+        else if(p->data==val){
+            printf("Cannot enter duplicate value in BST...\n");
+            exit(0);
         }
-        //deletion of node with 2 children by replacement with preorder predecessor
-        else if(p->left!=NULL && p->right!=NULL){
-            succ=p->left;
-            par=p;
-            if(succ->right==NULL){
-                p->data=succ->data;;
-                p->left=succ->left;
-                goto x;
-            }
-            while(succ->right!=NULL){
-                par=succ;
-                succ=succ->right;
-            }
-            p->data=succ->data;
-            par->right=NULL;
-        }
-        x:
-        printf("%d deletion success\n",val);
-        return;
     }
 }
-struct node* insert(struct node* p,int val){
+void delete(int e){
+    p=head;
+    while(p!=NULL){
+        if(p->data<e){
+            par=p;
+            p=p->right;
+        }
+        else if(p->data>e){
+            par=p;
+            p=p->left;
+        }
+        else if(p->data==e){
+            break;
+        }
+        if(p==NULL){
+            printf("Element not found");
+            return;
+        }
+    }
+    //leaf node deletion
+    if(p->right==NULL && p->left==NULL){
+        if(p==head){
+            head=NULL;
+            return;
+        }
+        if(p==par->right){
+            par->right=NULL;
+        }
+        else{
+            par->left=NULL;
+        }
+    }
+    //deletion of node with one child
+    else if(p->right!=NULL && p->left==NULL){
+        if(head==p){
+            head=p->right;
+            return;
+        }
+        if(p==par->right){
+            par->right=p->right;
+        }
+        else{
+            par->left=p->right;
+        }
+    }
+    else if(p->right==NULL && p->left!=NULL){
+            if(head==p){
+                head=p->left;
+                return;
+            }
+        if(p==par->right){
+            par->right=p->left;
+        }
+        else{
+            par->left=p->left;
+        }
+    }
+    //deletion of node with two children
+    else if(p->right!=NULL && p->left!=NULL){
+        succ=p->right;
+        if(succ->left==NULL){
+            p->data=succ->data;
+            p->right=succ->right;
+            printf("%d deletion success...\n",e);
+            return;
+        }
+
+        while(succ->left!=NULL){
+            par=succ;
+            succ=succ->left;
+        }
+        p->data=succ->data;
+        par->left=succ->right;
+    }
+    printf("%d Deletion success...\n",e);
+}
+void preorderTraversal(struct node *p){
     if(p==NULL){
-        n=(struct node*)malloc(sizeof(struct node));
-        n->data=val;
-        n->left=n->right=NULL;
-        printf("Inserted %d ...\n",val);
-        return n;
+        return;
     }
-    if(p->data>val){
-        p->left=insert(p->left,val);
+    printf("%d ",p->data);
+    inorderTraversal(p->left);
+    inorderTraversal(p->right);
+}
+void postorderTraversal(struct node *p){
+    if(p==NULL){
+        return;
     }
-    else if(p->data<val){
-        p->right=insert(p->right,val);
+    inorderTraversal(p->left);
+    inorderTraversal(p->right);
+    printf("%d ",p->data);
+}
+void inorderTraversal(struct node *p){
+    if(p==NULL){
+        return;
     }
-    else if(p->data==val){
-        printf("Cannot enter  duplicate value ...");
-        exit(0);
-    }
-    return p;
+    inorderTraversal(p->left);
+    printf("%d ",p->data);
+    inorderTraversal(p->right);
 }
 void largest(){
     p=head;
-    if(p==NULL){
-        printf("No elements in the tree...\n");
-        return;
+    if(head==NULL){
+        printf("No element in the tree...\n");
     }
-    else{
-        while(p->right!=NULL){
-            p=p->right;
-        }
-        printf("The largest element : %d\n",p->data);
+    while(p->right!=NULL){
+        p=p->right;
     }
+    printf("The largest element in the tree is %d\n",p->data);
 }
 void smallest(){
     p=head;
-    if(p==NULL){
-        printf("No elements in the tree...\n");
-        return;
-    }
-    else{
-        while(p->left!=NULL){
-            p=p->left;
-        }
-        printf("The smallest element : %d\n",p->data);
-    }
-}
-void inorder_traversal(struct node* p)
-{
     if(head==NULL){
-        printf("No elements in the tree...\n");
-        return;
+        printf("No element in the tree...\n");
     }
-    if(p==NULL){
-        return;
+    while(p->left!=NULL){
+        p=p->left;
     }
-    inorder_traversal(p->left);
-    printf("%d ",p->data);
-    inorder_traversal(p->right);
-}
-void pre_order_traversal(struct node* p)
-{
-    if(p==NULL){
-        return;
-    }
-    printf("%d ",p->data);
-    inorder_traversal(p->left);
-    inorder_traversal(p->right);
-}
-void post_order_traversal(struct node* p)
-{
-    if(p==NULL){
-        return;
-    }
-    inorder_traversal(p->left);
-    inorder_traversal(p->right);
-    printf("%d ",p->data);
+    printf("The smallest element in the tree %d\n",p->data);
 }
 int main()
 {
-    int f=1,c,e;
-    while(f){
+    int f=1,e,c;
+    while(f==1){
     printf("-----MENU-----\n");
-    printf("1.Insert 2.Delete 3.Traverse 4.Display smallest element 5.Display largest element 6.Exit\n");
-    printf("Enter a choice : ");
+    printf("1.Insert\n2.Delete\n3.Find largest element\n4.Find smallest element\n5.Pre order traversal\n6.Inorder Traversal\n");
+    printf("7.Postorder traversal\n8.Exit\nEnter a choice : ");
     scanf("%d",&c);
     switch(c){
     case 1:
         printf("Enter the element : ");
         scanf("%d",&e);
-        head=insert(head,e);
+        insert(e);
         break;
     case 2:
         printf("Enter the element : ");
         scanf("%d",&e);
-        par=head;
-        delete(head,e);
+        delete(e);
         break;
     case 3:
-        printf("1.Preorder traversal 2.Inorder traversal 3.Postorder traversal\nEnter a choice : ");
-        scanf("%d",&c);
-        switch(c){
-        case 1:
-            pre_order_traversal(head);
-            break;
-        case 2:
-            inorder_traversal(head);
-            break;
-        case 3:
-            post_order_traversal(head);
-            break;
-        default:
-            printf("Invalid choice...\n");
-        }
-        printf("\n");
+        largest();
         break;
     case 4:
-        smallest(head);
+        smallest();
         break;
     case 5:
-        largest(head);
+        if(head==NULL){
+            printf("Tree is empty...\n");
+            break;
+        }
+        preorderTraversal(head);
+        printf("\n");
         break;
     case 6:
+        if(head==NULL){
+            printf("Tree is empty...\n");
+            break;
+        }
+        inorderTraversal(head);
+        printf("\n");
+        break;
+    case 7:
+        if(head==NULL){
+            printf("Tree is empty...\n");
+            break;
+        }
+        postorderTraversal(head);
+        printf("\n");
+        break;
+    case 8:
         f=0;
         break;
-    defalt:
-        printf("Invalid choice\n");
+    default:
+        printf("Invalid choice...\n");
     }
     }
-return 0;
+    return 0;
 }
