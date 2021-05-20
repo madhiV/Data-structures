@@ -1,4 +1,3 @@
-package Day1;
 import java.util.Scanner;
 class Node{
     int data;
@@ -121,6 +120,23 @@ public class LinkedList {
         }
         return temp.data;
     }
+    public void reverse(){
+        temp=head;
+        old=null;
+        while(temp!=null){
+            if(old==null){
+                old=new Node(temp.data);
+            }
+            else{
+                n=new Node(temp.data);
+                n.next=old;
+                old=n;
+            }
+            temp=temp.next;
+        }
+        head=n;
+        System.out.println("Successfully reversed the list...\n");
+    }
     public void deleteList(){
         head=null;
         System.out.println("List deletion success...\n");
@@ -131,7 +147,7 @@ public class LinkedList {
         Scanner scanner=new Scanner(System.in);
         while(f==1){
             System.out.println("-----MENU-----\n");
-            System.out.println("1.Insert at begining\n2.Insert at middle\n3.Insert at the end\n4.Delete at begining\n5.Delete at middle\n6.Delete at end\n7.Traverse\n8.Count the number of elements\n9.Find the nth number of element in the list\n10.Delete List\n0.Exit\n");
+            System.out.println("1.Insert at begining\n2.Insert at middle\n3.Insert at the end\n4.Delete at begining\n5.Delete at middle\n6.Delete at end\n7.Traverse\n8.Count the number of elements\n9.Find the nth number of element in the list\n10.Delete List\n0.Exit\n11.Reverse the list");
             System.out.println("Enter your choice : ");
             c=scanner.nextInt();
             switch(c){
@@ -173,13 +189,15 @@ public class LinkedList {
                     System.out.println("Enter the position of the element to find : ");
                     e=scanner.nextInt();
                     System.out.println("The "+e+"th element of the list is : "+ obj.nthElement(e));
-                    break;
-                            
+                    break;     
                 case 10:
                     obj.deleteList();
                     break;
                 case 0:
                     f=0;
+                    break;
+                case 11:
+                    obj.reverse();
                     break;
                 default:
                     System.out.println("Invalid option");
