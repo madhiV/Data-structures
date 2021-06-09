@@ -1,5 +1,6 @@
 import java.util.*;
 public class BinaryTree {
+    static Scanner scanner=new Scanner(System.in);
     BNode temp,root,p;
     void insert(int data){
         temp=root;
@@ -76,6 +77,25 @@ public class BinaryTree {
                 s.push(p.left);
             }
         }
+    }
+    void deepestNode(){
+        temp=root;
+        if(temp==null){
+            System.out.println("Tree empty...");
+        }
+        Queue<BNode> q=new LinkedList<BNode>();
+        q.add(temp);
+        while(q.size()>0){
+            p=q.peek();
+            q.remove();
+            if(p.left!=null){
+                q.add(p.left);
+            }
+            if(p.right!=null){
+                q.add(p.right);
+            }
+        }
+        System.out.println("The deepest mode in the tree is : "+p.data);
     }
     int leaf(BNode temp){
         if(temp==null){
@@ -162,48 +182,53 @@ int no(BNode temp){
         }
         return 1+no(temp.right)+no(temp.left);
 }
-    public static void main(String[] args){
-        Scanner scanner=new Scanner(System.in);
-        BinaryTree obj=new BinaryTree();
-        int flag=1,c,e;
-        while(flag==1){
-            System.out.println("-----MENU-----");
-            System.out.println("1.Insert(Level order)\n2.Delete\n3.BFS\n4.DFS\n5.Number of leaf nodes\n6.Number of nodes\n7.Height of the tree\n0.Exit\nEnter a choice : ");
-            c=scanner.nextInt();
-            switch(c){
-                case 1:
-                    System.out.println("Enter the element : ");
-                    e=scanner.nextInt();
-                    obj.insert(e);
-                    break;
-                case 2:
-                    System.out.println("Enter the element : ");
-                    e=scanner.nextInt();
-                    obj.delete(e);
-                    break;
-                case 3:
-                    obj.levelOrderTraverse();
-                    break;
-                case 4:
-                    obj.DFS_iterative();
-                    System.out.println();
-                    break;
-                case 5:
-                    System.out.println("No. of leaf nodes : "+obj.leaf_iterative());
-                    break;
-                case 6:
-                    System.out.println("No. of nodes : "+obj.no(obj.root));
-                    break;
-                case 7:
-                    System.out.println("The height of the tree is :"+obj.height(obj.root));
-                    break;
-                case 0:
-                    flag=0;
-                    System.out.println("Exit success...");
-                    break;
-                default:
-                    System.out.println("Invalid choice...");
-            }
+void processTree(){
+    int flag=1,c,e;
+    while(flag==1){
+        System.out.println("-----MENU-----");
+        System.out.println("1.Insert(Level order)\n2.Delete\n3.BFS\n4.DFS\n5.Number of leaf nodes\n6.Number of nodes\n7.Height of the tree\n8.Deepest Node\n0.Exit\nEnter a choice : ");
+        c=scanner.nextInt();
+        switch(c){
+            case 1:
+                System.out.println("Enter the element : ");
+                e=scanner.nextInt();
+                insert(e);
+                break;
+            case 2:
+                System.out.println("Enter the element : ");
+                e=scanner.nextInt();
+                delete(e);
+                break;
+            case 3:
+                levelOrderTraverse();
+                break;
+            case 4:
+                DFS_iterative();
+                System.out.println();
+                break;
+            case 5:
+                System.out.println("No. of leaf nodes : "+leaf_iterative());
+                break;
+            case 6:
+                System.out.println("No. of nodes : "+no(root));
+                break;
+            case 7:
+                System.out.println("The height of the tree is :"+height(root));
+                break;
+            case 8:
+                deepestNode();
+                break;
+            case 0:
+                flag=0;
+                System.out.println("Exit success...");
+                break;
+            default:
+                System.out.println("Invalid choice...");
         }
+    }
+}
+    public static void main(String[] args){
+        BinaryTree obj=new BinaryTree();
+        obj.processTree();
     }
 }
