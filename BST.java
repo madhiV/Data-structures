@@ -25,6 +25,14 @@ public class BST {
         System.out.print(temp.data+" ");
         inorderTraversal(temp.right);
     }
+    void DFS(BNode temp){
+        if(temp==null){
+            return;
+        }
+        System.out.print(temp.data+" ");
+        inorderTraversal(temp.left);
+        inorderTraversal(temp.right);
+    }
     boolean search(BNode temp,int data){
         if(temp==null){
             return false;
@@ -106,7 +114,7 @@ public class BST {
         int c,e,flag=1;
         while(flag==1){
             System.out.println("-----MENU-----");
-            System.out.println("1.Insert\n2.Inorder traversal\n3.Search\n4.Delete\n5.Minimum value\n6.Maximum value\n7.BFS\n8.Height of the tree\n0.Exit");
+            System.out.println("1.Insert\n2.Inorder traversal\n3.Search\n4.Delete\n5.Minimum value\n6.Maximum value\n7.BFS\n8.Height of the tree\n9.DFS\n0.Exit");
             System.out.println("Enter a choice : ");
             c=scanner.nextInt();
             switch(c){
@@ -156,6 +164,10 @@ public class BST {
                     break;
                 case 8:
                     System.out.println("Height of the tree : "+height(root));
+                    break;
+                case 9:
+                    DFS(root);
+                    System.out.println();
                     break;
                 case 0:
                     flag=0;
